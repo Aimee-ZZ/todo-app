@@ -13,10 +13,7 @@ class Task(db.Model):
     completed = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
+# --- routes (same as before) ---
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -43,5 +40,12 @@ def delete(task_id):
     db.session.commit()
     return redirect(url_for('index'))
 
+# Ensure database tables exist when running the app directly
+def create_tables():
+    db.create_all()
+
 if __name__ == '__main__':
+    # create the tables inside the app context, then start the server
+    with app.app_context():
+        create_tables()
     app.run(debug=True)
