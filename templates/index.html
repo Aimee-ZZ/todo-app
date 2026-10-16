@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="POST" class="new-task">
+  <input name="content" placeholder="Add a new task..." required>
+  <button type="submit">Add</button>
+</form>
+
+<ul class="tasks">
+  {% for task in tasks %}
+  <li class="task {% if task.completed %}completed{% endif %}">
+    <form method="POST" action="{{ url_for('complete', task_id=task.id) }}" style="display:inline">
+      <button class="checkbox" title="Toggle complete">{{ '✓' if task.completed else ' ' }}</button>
+    </form>
+    <span class="content">{{ task.content }}</span>
+    <form method="POST" action="{{ url_for('delete', task_id=task.id) }}" style="display:inline">
+      <button class="delete">Delete</button>
+    </form>
+  </li>
+  {% else %}
+  <li>No tasks yet — add one!</li>
+  {% endfor %}
+</ul>
+{% endblock %}
